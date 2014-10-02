@@ -1,0 +1,13 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	width:1300px;
+	height:580px; 
+	margin:auto;
+	background:url(../images/bg.jpg) repeat scroll;
+}
+
+a{
+	text-decoration:none;
+}

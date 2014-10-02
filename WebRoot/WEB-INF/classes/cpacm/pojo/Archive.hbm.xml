@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+<!-- name是表示你要映射类的位置。table表示你要在数据库生成的表名 -->
+	<class name="cpacm.pojo.Archive" table="Archive">
+		<id name="aid"> <!-- 实体类中属性名  下同-->
+			<column name="aid" /> <!-- 表中的列名 下同-->
+			<generator class="native"></generator><!-- 自增长id -->
+		</id>
+		<property name="title" >  
+            <column name="title" length="50" />  
+        </property>
+        <property name="year" >  
+            <column name="year" length="10" />  
+        </property>
+        <property name="classid">  
+            <column name="classid" not-null="true" />  
+        </property>
+        <property name="dcNumber" >  
+            <column name="dcNumber" length="20" />  
+        </property>
+        <property name="fileNum" >  
+            <column name="fileNum" length="20" />  
+        </property>
+        <property name="location" >  
+            <column name="location" length="20" />  
+        </property>
+        <property name="level" >  
+            <column name="level" length="20" />  
+        </property>
+        <property name="outDate" >  
+            <column name="outDate" length="20" />  
+        </property>
+        <property name="partNum">  
+            <column name="partNum" length="20" />  
+        </property>
+        <property name="date1">  
+            <column name="date1" />  
+        </property>
+        <property name="date2">  
+            <column name="date2" />  
+        </property>
+        <property name="isBorrow" >  
+            <column name="isBorrow"/>  
+        </property>
+	</class>
+
+</hibernate-mapping>

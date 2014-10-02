@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<!-- action由spring进行实例化 -->
+	<constant name="struts.objectFactory" value="spring" />
+
+	<constant name="struts.devMode" value="true"></constant>
+
+	<package name="MySSH" extends="struts-default">
+		<!-- <action name="test" class="cpacm.struts2.demoAction" method="execute"> 
+			<result name="success">/Strut2Test.jsp</result> </action> -->
+
+		<!-- 全局的通用的action -->
+		<global-results>
+			<result name="error">/error.jsp</result>
+			<!-- <result name="success">/success.jsp</result> -->
+		</global-results>
+		
+		<!-- Action列表，其中class=myAct为spring中的id -->
+	    <action name="query" class="ArchiveAction" method="Query">
+	        <result name="Query">/frame/ArcDataGrid.jsp</result>
+	    </action>
+	    <action name="tag" class="ArchiveAction" method="toUpdate">
+	        <result name="toUpdate">/frame/ArcUpdate.jsp</result>
+	    </action>
+	    <action name="update" class="ArchiveAction" method="Update">
+	        <result name="success">/frame/ArcDataGrid.jsp</result>
+	    </action>
+	    <action name="delete" class="ArchiveAction" method="Delete">
+	        <result name="success">/frame/ArcDataGrid.jsp</result>
+	    </action>
+	    <action name="queryByclassId" class="ArchiveAction" method="QueryByclassID">
+	        <result name="success">/frame/ArcDataGrid.jsp</result>
+	    </action>
+	    <action name="ArcAdd" class="ArchiveAction" method="Add">
+	        <result name="success">/frame/ArcAddData.jsp</result>
+	    </action>
+	</package>
+
+</struts>    

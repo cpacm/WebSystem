@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd"
+	xmlns:tx="http://www.springframework.org/schema/tx">
+
+	<!-- 数据库实体 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver">
+		</property>
+		<property name="url" value="jdbc:mysql://localhost/querydb"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="shen"></property>
+	</bean>
+
+	<!-- hibernate实体 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+				<!-- hibernate 数据的更新方式 -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<!-- 解决no session found -->
+				<!--使用getCurrentSession()需要加入如下配置 -->
+				<prop key="hibernate.current_session_context_class">thread</prop>
+				<!-- hibernate分页出现 ResultSet may only be accessed in a forward direction需要设置hibernate结果集滚动 -->
+				<!-- <prop key="jdbc.use_scrollable_resultset">false</prop> -->
+			</props>
+
+		</property>
+
+		<!-- 配置实体Hibernate的描述文件 -->
+		<property name="mappingResources">
+			<list>
+				<!-- 实体类列表 -->
+				<value>cpacm/pojo/Archive.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 控制层 struts实体（Action实体） -->
+	<bean id="ArchiveAction" class="cpacm.action.ArchiveAction" scope="prototype">
+		<property name="archiveService" ref="ArchiveService"></property>
+	</bean>
+
+	<!-- 逻辑层 service -->
+	<bean id="ArchiveService" class="cpacm.service.ArchiveService">
+		<property name="archiveDao" ref="ArchiveDao"></property>
+	</bean>
+
+	<!-- 数据层，用于数据库的操作 -->
+	<bean id="ArchiveDao" class="cpacm.dao.ArchiveDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+    <!-- spring自带的事物管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="create*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="findByQuery*" propagation="REQUIRED" />
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config proxy-target-class="true">
+		<aop:advisor advice-ref="txAdvice"
+			pointcut="execution(* net.noday..service..*.*(..))" />
+
+	</aop:config>
+
+
+</beans>
